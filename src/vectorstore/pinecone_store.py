@@ -44,7 +44,7 @@ def get_index(api_key: str = None):
     return create_index_if_not_exists(api_key)
 
 
-def upsert_chunks(chunks: List[Dict], api_key: str = None):
+def upsert_chunks(chunks: List[Dict], api_key: str = None, namespace: str = "default"):
     """
     Embed and upload document chunks to Pinecone.
     Also stores chunks locally for keyword search.
@@ -78,7 +78,7 @@ def upsert_chunks(chunks: List[Dict], api_key: str = None):
     batch_size = 100
     for i in range(0, len(vectors), batch_size):
         batch = vectors[i : i + batch_size]
-        index.upsert(vectors=batch)
+        index.upsert(vectors=batch, namespace=namespace)
 
     return len(vectors)
 
@@ -132,7 +132,7 @@ def keyword_search(query: str, top_k: int = 5) -> List[Dict]:
     return results
 
 
-def search(query: str, top_k: int = 10, api_key: str = None) -> List[Dict]:
+def search(query: str, top_k: int = 10, api_key: str = None, namespace: str = "default") -> List[Dict]:
     """
     Hybrid search: Pinecone vector search + keyword search.
     Always returns a list, never None.
@@ -147,6 +147,7 @@ def search(query: str, top_k: int = 10, api_key: str = None) -> List[Dict]:
             vector=query_vector,
             top_k=top_k,
             include_metadata=True,
+            namespace=namespace,
         )
 
         if results is not None and hasattr(results, 'matches') and results.matches is not None:
@@ -186,12 +187,12 @@ def search(query: str, top_k: int = 10, api_key: str = None) -> List[Dict]:
     merged.sort(key=lambda x: x.get("score", 0), reverse=True)
 
     return merged[:top_k]
-def delete_all(api_key: str = None):
+def delete_all(api_key: str = None, namespace: str = "default"):
     """Delete all vectors from the index. Used for resetting."""
     global _local_chunks
     _local_chunks = []
     try:
         index = get_index(api_key)
-        index.delete(delete_all=True)
+        index.delete(delete_all=True, namespace=namespace)
     except Exception:
         pass

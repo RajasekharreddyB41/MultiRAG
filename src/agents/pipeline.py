@@ -17,6 +17,7 @@ def run_pipeline(
     groq_key = keys.get("groq", "")
     google_key = keys.get("google", "")
     pinecone_key = keys.get("pinecone", "")
+    namespace = keys.get("namespace", "default")
 
     route = route_query(query, has_documents, groq_key)
 
@@ -26,7 +27,7 @@ def run_pipeline(
     if route == "image" and images:
         return _handle_image(query, images, google_key)
 
-    return _handle_rag(query, chat_history, groq_key, pinecone_key)
+    return _handle_rag(query, chat_history, groq_key, pinecone_key, namespace)
 
 
 def run_pipeline_stream(
@@ -41,6 +42,7 @@ def run_pipeline_stream(
     groq_key = keys.get("groq", "")
     google_key = keys.get("google", "")
     pinecone_key = keys.get("pinecone", "")
+    namespace = keys.get("namespace", "default")
 
     # Step 1: Route
     route = route_query(query, has_documents, groq_key)
@@ -86,7 +88,7 @@ def run_pipeline_stream(
     top_k = 30 if is_summary else 10
 
     yield {"type": "status", "message": "Searching documents..."}
-    chunks = _safe_search(query, pinecone_key, top_k=top_k)
+    chunks = _safe_search(query, pinecone_key, top_k=top_k, namespace=namespace)
 
     if not chunks:
         yield {"type": "token", "content": "No relevant documents found. Please make sure documents are uploaded and try again."}
@@ -110,7 +112,7 @@ def run_pipeline_stream(
             retries += 1
             yield {"type": "status", "message": f"Refining search (attempt {retries + 1})..."}
             refined = _safe_refine(query, grade.get("feedback", ""), groq_key)
-            chunks = _safe_search(refined, pinecone_key)
+            chunks = _safe_search(refined, pinecone_key, namespace=namespace)
             if chunks:
                 grade = _safe_grade(query, chunks, groq_key)
                 filtered = grade.get("filtered_chunks") or chunks[:5]
@@ -165,11 +167,11 @@ def run_pipeline_stream(
 # Safe wrapper functions — never return None
 # ──────────────────────────────────────────────
 
-def _safe_search(query: str, pinecone_key: str, top_k: int = 10) -> List[Dict]:
+def _safe_search(query: str, pinecone_key: str, top_k: int = 10, namespace: str = "default") -> List[Dict]:
     """Search with error handling. Always returns a list."""
     try:
         from src.vectorstore.pinecone_store import search
-        results = search(query, top_k=top_k, api_key=pinecone_key)
+        results = search(query, top_k=top_k, api_key=pinecone_key, namespace=namespace)
         if results is None:
             return []
         return results
@@ -257,9 +259,9 @@ def _handle_image(query: str, images: dict, google_key: str) -> Dict:
         return {"answer": f"Image analysis error: {e}", "sources": [], "route": "image", "grade_score": 0}
 
 
-def _handle_rag(query: str, chat_history: list, groq_key: str, pinecone_key: str) -> Dict:
+def _handle_rag(query: str, chat_history: list, groq_key: str, pinecone_key: str, namespace: str = "default") -> Dict:
     """Handle RAG questions (non-streaming path)."""
-    chunks = _safe_search(query, pinecone_key)
+    chunks = _safe_search(query, pinecone_key, namespace=namespace)
     if not chunks:
         return {"answer": "No relevant documents found.", "sources": [], "route": "rag", "grade_score": 0}
 
@@ -270,7 +272,7 @@ def _handle_rag(query: str, chat_history: list, groq_key: str, pinecone_key: str
     while grade.get("score", 5) < 4 and retries < MAX_RETRIES:
         retries += 1
         refined = _safe_refine(query, grade.get("feedback", ""), groq_key)
-        chunks = _safe_search(refined, pinecone_key)
+        chunks = _safe_search(refined, pinecone_key, namespace=namespace)
         if chunks:
             grade = _safe_grade(query, chunks, groq_key)
             filtered = grade.get("filtered_chunks") or chunks[:5]

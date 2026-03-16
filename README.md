@@ -14,7 +14,7 @@ MultiRAG is a production-grade Retrieval-Augmented Generation system that proces
 
 > Upload any PDF → Ask questions → Get cited answers with source references
 
-**Live Demo:** [multirag-rajasekharreddy.streamlit.app](https://multirag-rajasekhar.streamlit.app)
+**Live Demo:** [multirag-rajasekhar.streamlit.app](https://multirag-rajasekhar.streamlit.app)
 
 *Bring your own API keys (free tiers available for all services)*
 
@@ -97,51 +97,7 @@ User Query
 - Python 3.10+
 - Free API keys from: [Groq](https://console.groq.com), [Google AI Studio](https://aistudio.google.com/apikey), [Pinecone](https://app.pinecone.io)
 
-### Installation
 
-```bash
-# Clone the repository
-git clone https://github.com/RajasekharreddyB41/MultiRAG.git
-cd MultiRAG
-
-# Create virtual environment
-python -m venv venv
-
-# Activate (Windows)
-venv\Scripts\activate
-
-# Activate (Mac/Linux)
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-```
-
-### Configuration
-
-Create a `.env` file in the project root:
-
-```env
-GROQ_API_KEY=your_groq_key_here
-GOOGLE_API_KEY=your_google_key_here
-PINECONE_API_KEY=your_pinecone_key_here
-PINECONE_INDEX_NAME=multirag-index
-
-# Optional: LangSmith tracing
-LANGSMITH_API_KEY=your_langsmith_key_here
-LANGCHAIN_TRACING_V2=true
-LANGCHAIN_PROJECT=MultiRAG
-```
-
-### Run
-
-```bash
-streamlit run src/ui/app.py
-```
-
-Open `http://localhost:8501` in your browser. Enter your API keys in the sidebar, upload a PDF, and start asking questions.
-
----
 
 ## 📁 Project Structure
 
@@ -188,16 +144,7 @@ All API keys are free. Here's how to get them:
 
 
 
----
 
-## 🔮 Roadmap
-
-- [ ] RAGAS evaluation metrics dashboard
-- [ ] LangSmith tracing integration
-- [ ] Multi-document cross-referencing
-- [ ] Dynamic example questions based on uploaded content
-- [ ] Docker containerization
-- [ ] Support for Word, Excel, and CSV files
 
 ---
 

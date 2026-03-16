@@ -39,6 +39,9 @@ if not IMPORTS_OK:
 # ──────────────────────────────────────────────
 # Session State
 # ──────────────────────────────────────────────
+if "session_id" not in st.session_state:
+    import uuid
+    st.session_state.session_id = str(uuid.uuid4())[:8]
 if "messages" not in st.session_state:
     st.session_state.messages = []
 if "documents_uploaded" not in st.session_state:
@@ -71,6 +74,7 @@ if st.sidebar.button("✅ Connect", use_container_width=True):
             "groq": groq_key,
             "google": google_key,
             "pinecone": pinecone_key,
+            "namespace": st.session_state.session_id,
         }
         st.session_state.keys_valid = True
         st.sidebar.success("All APIs connected!")
@@ -151,7 +155,7 @@ else:
             if all_chunks:
                 st.sidebar.text("Uploading to Pinecone...")
                 try:
-                    count = upsert_chunks(all_chunks, st.session_state.api_keys["pinecone"])
+                    count = upsert_chunks(all_chunks, st.session_state.api_keys["pinecone"], namespace=st.session_state.session_id)
                     st.session_state.documents_uploaded = True
                     st.session_state.uploaded_files_list = [f.name for f in uploaded_files]
                     st.sidebar.success(f"✅ {count} chunks uploaded!")
@@ -167,7 +171,7 @@ if st.session_state.uploaded_files_list:
 
     if st.sidebar.button("🗑️ Clear All", use_container_width=True):
         try:
-            delete_all(st.session_state.api_keys["pinecone"])
+            delete_all(st.session_state.api_keys["pinecone"], namespace=st.session_state.session_id)
         except Exception:
             pass
         st.session_state.documents_uploaded = False
