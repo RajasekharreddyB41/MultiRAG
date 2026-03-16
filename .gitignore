@@ -1,0 +1,26 @@
+# Secrets
+.env
+.env.local
+.env.production
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Data
+data/uploads/
+data/temp/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Embeddings cache
+.cache/

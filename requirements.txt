@@ -1,0 +1,35 @@
+# Core
+streamlit>=1.45.0
+python-dotenv>=1.1.0
+
+# LLM Providers
+groq>=0.25.0
+google-generativeai>=0.8.5
+
+# Embeddings
+sentence-transformers>=4.0.0
+
+# Vector Database
+pinecone>=6.0.0
+
+# Document Processing
+PyMuPDF>=1.25.0
+camelot-py[base]>=0.11.0
+pytesseract>=0.3.13
+Pillow>=11.0.0
+
+# Agentic Framework
+langgraph>=0.4.1
+langchain>=1.2.0
+langchain-core>=1.2.0
+
+# Evaluation
+ragas>=0.4.0
+
+# Tracing
+langsmith>=0.7.0
+
+# Utilities
+tiktoken>=0.9.0
+numpy>=2.0.0
+pandas>=2.2.0
