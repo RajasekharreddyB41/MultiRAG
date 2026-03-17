@@ -94,7 +94,6 @@ User Query
 ## 🚀 Quick Start
 
 ### Prerequisites
-- Python 3.10+
 - Free API keys from: [Groq](https://console.groq.com), [Google AI Studio](https://aistudio.google.com/apikey), [Pinecone](https://app.pinecone.io)
 
 
@@ -138,7 +137,6 @@ All API keys are free. Here's how to get them:
 | Groq | [console.groq.com](https://console.groq.com) | Sign up → API Keys → Create | 1 min |
 | Google | [aistudio.google.com](https://aistudio.google.com/apikey) | Sign up → Create API Key | 1 min |
 | Pinecone | [app.pinecone.io](https://app.pinecone.io) | Sign up → API Keys → Copy | 1 min |
-| LangSmith | [smith.langchain.com](https://smith.langchain.com) | Sign up → Settings → API Keys | 1 min |
 
 **Security:** Keys entered in the app are stored in your browser session only. They are never saved on any server or transmitted to third parties.
 
