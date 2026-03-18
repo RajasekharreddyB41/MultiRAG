@@ -35,7 +35,6 @@ MultiRAG is a production-grade Retrieval-Augmented Generation system that proces
 
 ### Production Features
 - **Streaming Responses** — Token-by-token streaming via Groq for a ChatGPT-like experience
-- **Conversation Memory** — Maintains chat history for follow-up questions
 - **BYOK (Bring Your Own Key)** — Users enter their own API keys; keys stored in browser session only, never on servers
 - **Example Questions** — Clickable starter questions to guide new users
 - **Document Management** — Upload multiple PDFs, view loaded documents, clear and reset
